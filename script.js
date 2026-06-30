@@ -233,8 +233,25 @@ function closestLinkToX(clientX) {
   return best;
 }
 
+let sectionPositions = [];
+
+function cacheSectionPositions() {
+  sectionPositions = Array.from(sections).map(sec => {
+    const rect = sec.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const offsetTop = rect.top + scrollTop;
+    return {
+      id: sec.getAttribute("id"),
+      offsetTop: offsetTop,
+      offsetBottom: offsetTop + rect.height
+    };
+  });
+}
+
 // ── Initial mount — restore last section or default to home ──────────────────
 window.addEventListener("load", () => {
+  cacheSectionPositions();
+  
   const savedSection = localStorage.getItem("portfolio_last_section") || "home";
   const savedLink    = dockLinks.find(l => l.getAttribute("href") === `#${savedSection}`);
   const targetLink   = savedLink || dockLinks[0];
@@ -253,6 +270,7 @@ window.addEventListener("load", () => {
 
 // ── Window resize: snap without glide ────────────────────────────────────────
 window.addEventListener("resize", () => {
+  cacheSectionPositions();
   const active = dock.querySelector("a.active");
   if (active) moveTo(active, false);
 });
@@ -375,11 +393,12 @@ function updateScrollspy() {
     let currentId = "home";
     const pos = sy + 160;
 
-    sections.forEach(sec => {
-      if (pos >= sec.offsetTop && pos < sec.offsetTop + sec.offsetHeight) {
-        currentId = sec.getAttribute("id");
+    for (const sec of sectionPositions) {
+      if (pos >= sec.offsetTop && pos < sec.offsetBottom) {
+        currentId = sec.id;
+        break;
       }
-    });
+    }
 
     if (window.innerHeight + sy >= document.documentElement.scrollHeight - 60) {
       currentId = "contact";
