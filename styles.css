@@ -1042,14 +1042,17 @@ textarea.form-input {
 
 @media (max-width: 960px) {
   .hero {
-    padding-top: 40px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 60px;
     padding-bottom: 60px;
     min-height: auto;
   }
   
   .hero-content {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 24px;
+    width: 100%;
   }
 
   .hero-portrait-frame {
@@ -1058,7 +1061,7 @@ textarea.form-input {
     width: 100%;
     max-width: 320px;
     height: 380px;
-    margin: 0 auto;
+    margin: 40px auto 0;
     display: flex;
     justify-content: center;
     transform: none !important;
@@ -1129,16 +1132,23 @@ textarea.form-input {
   }
 
   .hero {
-    padding: 40px 5vw;
+    padding: 50px 6vw;
   }
 
   .hero-stats-mockup {
-    margin-bottom: 40px;
-    gap: 32px;
+    margin-bottom: 32px;
+    gap: 36px;
   }
 
   .hero-hello-title {
-    font-size: clamp(4rem, 14vw, 7rem);
+    font-size: clamp(3.8rem, 12vw, 6.5rem);
+    margin-bottom: 8px;
+  }
+
+  .hero-portrait-frame {
+    max-width: 280px;
+    height: 330px;
+    margin: 30px auto 0;
   }
 
   .intro-grid,
@@ -1175,6 +1185,7 @@ textarea.form-input {
   .hero-actions-mockup {
     display: grid;
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .button {
