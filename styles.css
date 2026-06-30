@@ -361,8 +361,7 @@ a {
 
 .hero-copy-mockup {
   max-width: 640px;
-  position: relative;
-  z-index: 10;
+  position: static;
 }
 
 /* Stats above massive text */
@@ -404,6 +403,8 @@ a {
   color: var(--text-primary);
   letter-spacing: -0.04em;
   margin: 0 0 16px;
+  position: relative;
+  z-index: 1; /* render behind portrait */
 }
 
 /* Bio description below greeting */
@@ -418,10 +419,10 @@ a {
 .hero-portrait-frame {
   position: absolute;
   right: 0;
-   bottom: 4;         /* anchored to hero floor */
+   bottom: 4px;         /* anchored to hero floor */
   top: -50px;         /* bleed 60px above the hero top edge — shows full head */
   width: 44%;
-  z-index: 10;
+  z-index: 2; /* render in front of hello */
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
@@ -1043,25 +1044,46 @@ textarea.form-input {
 @media (max-width: 960px) {
   .hero {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center; /* center on mobile/tablet */
     padding-top: 60px;
     padding-bottom: 60px;
     min-height: auto;
   }
   
   .hero-content {
-    grid-template-columns: 1fr;
-    gap: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* center items */
     width: 100%;
+  }
+
+  .hero-copy-mockup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-stats-mockup {
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .hero-hello-title {
+    text-align: center;
+    position: relative;
+    z-index: 1; /* render behind portrait */
+    margin-bottom: 0; /* no bottom margin as portrait overlaps it */
   }
 
   .hero-portrait-frame {
     position: relative;
+    z-index: 2; /* render in front of hello */
     right: 0;
     width: 100%;
     max-width: 320px;
     height: 380px;
-    margin: 40px auto 0;
+    margin: -100px auto 0; /* slide up to overlap hello */
     display: flex;
     justify-content: center;
     transform: none !important;
@@ -1072,6 +1094,22 @@ textarea.form-input {
     height: 100% !important;
     margin-top: 0 !important;
     object-fit: contain;
+  }
+
+  /* Minimized, centered intro on mobile/tablet */
+  .hero-bio {
+    font-size: 0.95rem; /* compact */
+    line-height: 1.6;
+    color: var(--text-primary);
+    text-align: center;
+    margin: 24px auto;
+    max-width: 440px;
+  }
+
+  .hero-actions-mockup {
+    justify-content: center;
+    margin-bottom: 24px;
+    width: 100%;
   }
 
   .intro-grid,
@@ -1136,19 +1174,25 @@ textarea.form-input {
   }
 
   .hero-stats-mockup {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     gap: 36px;
   }
 
   .hero-hello-title {
     font-size: clamp(3.8rem, 12vw, 6.5rem);
-    margin-bottom: 8px;
+    margin-bottom: 0;
   }
 
   .hero-portrait-frame {
     max-width: 280px;
     height: 330px;
-    margin: 30px auto 0;
+    margin: -90px auto 0; /* keep overlap proportions on small screens */
+  }
+
+  .hero-bio {
+    font-size: 0.9rem; /* further minimized on small mobile */
+    margin: 20px auto;
+    max-width: 340px;
   }
 
   .intro-grid,
@@ -1178,10 +1222,6 @@ textarea.form-input {
 }
 
 @media (max-width: 480px) {
-  .brand strong {
-    display: none;
-  }
-
   .hero-actions-mockup {
     display: grid;
     grid-template-columns: 1fr;
