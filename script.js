@@ -150,44 +150,12 @@ function showFormStatus(text, type) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 5. Dock indicator — iOS-style critically-damped lerp + pointer drag
+// 5. Dock indicator — pointer drag & CSS transition animation
 // ─────────────────────────────────────────────────────────────────────────────
 const sections    = document.querySelectorAll("section[id]");
 const dock        = document.querySelector(".floating-dock");
 const dockInd     = document.querySelector(".dock-indicator");
 const dockLinks   = Array.from(document.querySelectorAll(".floating-dock a"));
-let   ticking     = false;
-
-// ── Lerp state ────────────────────────────────────────────────────────────────
-let cur = { left: 0, top: 0, w: 0, h: 0 };   // rendered each frame
-let tgt = { left: 0, top: 0, w: 0, h: 0 };   // goal position
-
-const LERP_FACTOR = 0.18;   // lower → slower/smoother (iOS uses ~0.15-0.20)
-const SETTLE_DIST = 0.05;   // px threshold to stop the rAF loop
-let   lerpRAF     = null;
-let   booted      = false;  // first render snaps without animation
-
-// ── One rAF step of the lerp loop ────────────────────────────────────────────
-function lerpStep() {
-  let moving = false;
-
-  for (const k of ["left", "top", "w", "h"]) {
-    const d = tgt[k] - cur[k];
-    cur[k] += d * LERP_FACTOR;
-    if (Math.abs(d) > SETTLE_DIST) moving = true;
-  }
-
-  dockInd.style.left   = `${cur.left}px`;
-  dockInd.style.top    = `${cur.top}px`;
-  dockInd.style.width  = `${cur.w}px`;
-  dockInd.style.height = `${cur.h}px`;
-
-  lerpRAF = moving ? requestAnimationFrame(lerpStep) : null;
-}
-
-function startLerp() {
-  if (!lerpRAF) lerpRAF = requestAnimationFrame(lerpStep);
-}
 
 // ── Move the target to a given dock link ─────────────────────────────────────
 function moveTo(link, animate = true) {
@@ -196,22 +164,26 @@ function moveTo(link, animate = true) {
   const lr = link.getBoundingClientRect();
   const dr = dock.getBoundingClientRect();
 
-  tgt.left = lr.left - dr.left;
-  tgt.top  = lr.top  - dr.top;
-  tgt.w    = lr.width;
-  tgt.h    = lr.height;
+  const left = lr.left - dr.left;
+  const top  = lr.top  - dr.top;
+  const w    = lr.width;
+  const h    = lr.height;
 
-  if (!booted || !animate) {
-    // Snap immediately — no glide on first paint or resize
-    Object.assign(cur, tgt);
-    dockInd.style.display = "block";
-    dockInd.style.left    = `${cur.left}px`;
-    dockInd.style.top     = `${cur.top}px`;
-    dockInd.style.width   = `${cur.w}px`;
-    dockInd.style.height  = `${cur.h}px`;
-    booted = true;
+  if (!animate) {
+    dockInd.style.transition = "none";
   } else {
-    startLerp();
+    // Hardware accelerated smooth transition curve
+    dockInd.style.transition = "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1), height 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
+  }
+
+  dockInd.style.display = "block";
+  dockInd.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+  dockInd.style.width   = `${w}px`;
+  dockInd.style.height  = `${h}px`;
+
+  if (!animate) {
+    // Force a browser reflow so that changing transition back to auto later works
+    void dockInd.offsetHeight;
   }
 }
 
@@ -233,25 +205,8 @@ function closestLinkToX(clientX) {
   return best;
 }
 
-let sectionPositions = [];
-
-function cacheSectionPositions() {
-  sectionPositions = Array.from(sections).map(sec => {
-    const rect = sec.getBoundingClientRect();
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const offsetTop = rect.top + scrollTop;
-    return {
-      id: sec.getAttribute("id"),
-      offsetTop: offsetTop,
-      offsetBottom: offsetTop + rect.height
-    };
-  });
-}
-
 // ── Initial mount — restore last section or default to home ──────────────────
 window.addEventListener("load", () => {
-  cacheSectionPositions();
-  
   const savedSection = localStorage.getItem("portfolio_last_section") || "home";
   const savedLink    = dockLinks.find(l => l.getAttribute("href") === `#${savedSection}`);
   const targetLink   = savedLink || dockLinks[0];
@@ -270,7 +225,6 @@ window.addEventListener("load", () => {
 
 // ── Window resize: snap without glide ────────────────────────────────────────
 window.addEventListener("resize", () => {
-  cacheSectionPositions();
   const active = dock.querySelector("a.active");
   if (active) moveTo(active, false);
 });
@@ -383,46 +337,63 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 6. Scrollspy
+// 6. Scrollspy via Intersection Observer (High performance, no layout thrashing)
 // ─────────────────────────────────────────────────────────────────────────────
-function updateScrollspy() {
-  const sy = window.scrollY;
+if (sections.length > 0) {
+  const scrollspyOptions = {
+    root: null,
+    rootMargin: "-25% 0px -55% 0px", // focus on the middle section of the screen
+    threshold: 0
+  };
 
-  // Scrollspy — skip while user is dragging the dock
-  if (!isDragging) {
-    let currentId = "home";
-    const pos = sy + 160;
+  const scrollspyObserver = new IntersectionObserver((entries) => {
+    // Only process if user is not currently dragging the dock
+    if (isDragging) return;
 
-    for (const sec of sectionPositions) {
-      if (pos >= sec.offsetTop && pos < sec.offsetBottom) {
-        currentId = sec.id;
-        break;
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const currentId = entry.target.getAttribute("id");
+
+        // If programmatic scroll is active, ignore scrollspy updates until we reach the target
+        if (scrollTargetSectionId) {
+          if (currentId === scrollTargetSectionId) {
+            scrollTargetSectionId = null;
+          } else {
+            return;
+          }
+        }
+
+        const match = dockLinks.find(l => l.getAttribute("href") === `#${currentId}`);
+        if (match && !match.classList.contains("active")) {
+          setActive(match);
+          moveTo(match);
+          localStorage.setItem("portfolio_last_section", currentId);
+        }
       }
-    }
+    });
+  }, scrollspyOptions);
 
-    if (window.innerHeight + sy >= document.documentElement.scrollHeight - 60) {
-      currentId = "contact";
-    }
-
-    // If programmatic scroll is active, ignore scrollspy updates until we reach the target
-    if (scrollTargetSectionId) {
-      if (currentId === scrollTargetSectionId) {
-        scrollTargetSectionId = null;
-      } else {
-        return;
-      }
-    }
-
-    const match = dockLinks.find(l => l.getAttribute("href") === `#${currentId}`);
-    if (match && !match.classList.contains("active")) {
-      setActive(match);
-      moveTo(match);
-      // ── Save section so refresh lands here ──
-      localStorage.setItem("portfolio_last_section", currentId);
-    }
-  }
+  sections.forEach((sec) => {
+    scrollspyObserver.observe(sec);
+  });
 }
 
-// Run on scroll
-window.addEventListener("scroll", updateScrollspy, { passive: true });
+// Throttled scroll listener to detect scrolled-to-bottom (contact section fallback)
+let scrollTimeout;
+window.addEventListener("scroll", () => {
+  if (scrollTimeout) return;
+
+  scrollTimeout = setTimeout(() => {
+    scrollTimeout = null;
+
+    if (!isDragging && (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60)) {
+      const match = dockLinks.find(l => l.getAttribute("href") === "#contact");
+      if (match && !match.classList.contains("active")) {
+        setActive(match);
+        moveTo(match);
+        localStorage.setItem("portfolio_last_section", "contact");
+      }
+    }
+  }, 150);
+}, { passive: true });
 
