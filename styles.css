@@ -288,7 +288,7 @@ a {
 /* Hero Section */
 .hero {
   position: relative;
-  min-height: calc(100vh - 80px);
+  min-height: 100vh;
   padding-left: 14vw;
   padding-right: 6vw;
   display: flex;
@@ -312,7 +312,7 @@ a {
 .sidebar-left {
   position: absolute;
   left: 5vw;
-  top: 100px;
+  top: 60px;
   bottom: 40px;
   display: flex;
   flex-direction: column;
