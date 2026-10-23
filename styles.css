@@ -26,6 +26,7 @@
 
 html {
   background-color: var(--bg-primary);
+  overflow-x: hidden;
 }
 
 body {
@@ -1034,13 +1035,14 @@ textarea.form-input {
   font-size: 0.8rem;
 }
 
-/* --- Media Queries --- */
+/* --- Super Intelligence Mobile & Tablet Responsive Design System --- */
+
 @media (max-width: 1120px) {
   .hero {
     padding-left: 6vw;
   }
   .sidebar-left {
-    display: none; /* Hide sidebar text on tablets for space */
+    display: none; /* Hide sidebar text on tablets/mobile for clean edge-to-edge space */
   }
   .section {
     padding-left: 6vw;
@@ -1055,25 +1057,35 @@ textarea.form-input {
 
 @media (max-width: 960px) {
   .hero {
-    padding-top: 40px;
-    padding-bottom: 60px;
     min-height: auto;
+    padding: 56px 6vw 48px;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
   }
   
   .hero-content {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
+    width: 100%;
+  }
+
+  .hero-copy-mockup {
+    max-width: 100%;
   }
 
   .hero-portrait-frame {
     position: relative;
-    right: 0;
+    right: auto;
+    bottom: auto;
+    top: auto;
     width: 100%;
-    max-width: 320px;
-    height: 380px;
+    max-width: 340px;
+    height: 400px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
+    align-items: flex-end;
     transform: none !important;
   }
 
@@ -1082,14 +1094,19 @@ textarea.form-input {
     height: 100% !important;
     margin-top: 0 !important;
     object-fit: contain;
-    mix-blend-mode: normal !important; /* disable CPU-heavy blending on mobile */
-    filter: none !important;           /* disable shader filter on mobile to save RAM/CPU */
+    object-position: bottom center;
+    mix-blend-mode: normal !important;
+    filter: none !important;
+    opacity: 1 !important;
   }
 
   .intro-grid,
   .project-grid,
-  .timeline {
+  .timeline,
+  .credential-grid,
+  .skills-layout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
   }
 
   .project-card.featured {
@@ -1099,46 +1116,88 @@ textarea.form-input {
   .contact-section {
     grid-template-columns: 1fr;
     gap: 40px;
-    padding: 40px;
+    margin: 32px 6vw 60px;
+    padding: 40px 32px;
   }
 }
 
 @media (max-width: 768px) {
-  .site-header {
-    min-height: 72px;
-    padding: 0 5vw;
+  body {
+    padding-bottom: 120px; /* Generous spacing so content is never hidden behind floating dock */
   }
 
-  .status-badge {
-    padding: 6px 12px;
-    font-size: 0.74rem;
-  }
-
+  /* Enhanced Mobile Floating Navigation Dock */
   .floating-dock {
-    width: 92vw;
-    max-width: 440px;
-    padding: 6px;
-    bottom: 16px;
+    width: auto;
+    max-width: calc(100vw - 28px);
+    padding: 6px 8px;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
     gap: 4px;
-    justify-content: space-around;
+    justify-content: center;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
   .floating-dock a {
-    padding: 8px 10px;
-    font-size: 0.76rem;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    min-height: 38px;
   }
 
   .hero {
-    padding: 40px 5vw;
+    padding: 40px 5vw 36px;
+    gap: 28px;
   }
 
   .hero-stats-mockup {
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     gap: 32px;
   }
 
+  .hero-stat-item dt {
+    font-size: 1.9rem;
+  }
+
   .hero-hello-title {
-    font-size: clamp(4rem, 14vw, 7rem);
+    font-size: clamp(3.8rem, 15vw, 6rem);
+    margin-bottom: 16px;
+  }
+
+  .hero-bio {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .hero-portrait-frame {
+    max-width: 300px;
+    height: 360px;
+    margin-top: 8px;
+  }
+
+  /* Horizontal swipeable category filter bar on mobile */
+  .filter-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+    margin: 0 -5vw 36px;
+    padding: 4px 5vw 8px;
+    scrollbar-width: none;
+  }
+
+  .filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 8px 16px;
+    font-size: 0.8rem;
   }
 
   .intro-grid,
@@ -1147,48 +1206,120 @@ textarea.form-input {
   .credential-grid,
   .skills-layout {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .project-card.featured {
     grid-column: span 1;
   }
 
-  .hero-stats div {
-    min-height: 80px;
+  .project-card {
+    padding: 26px 20px;
+    border-radius: 16px;
+  }
+
+  .timeline-item {
+    padding: 26px 20px;
+    border-radius: 14px;
+  }
+
+  .timeline-item::before {
+    top: 26px;
+    right: 20px;
   }
 
   .section {
-    padding: 72px 5vw;
+    padding: 60px 5vw;
+  }
+
+  .section-heading {
+    margin-bottom: 32px;
   }
 
   .contact-section {
-    margin: 24px 5vw 48px;
-    padding: 32px;
+    margin: 20px 4vw 48px;
+    padding: 32px 22px;
+    border-radius: 20px;
+  }
+
+  .form-input {
+    font-size: 16px !important; /* Prevents unwanted iOS auto-zoom */
+    padding: 13px 16px;
+  }
+
+  .site-footer {
+    padding: 0 5vw 40px;
+    text-align: center;
   }
 }
 
 @media (max-width: 480px) {
-  .brand strong {
-    display: none;
+  .hero {
+    padding: 32px 18px 24px;
+    gap: 20px;
+  }
+
+  .hero-stats-mockup {
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .hero-stat-item dt {
+    font-size: 1.7rem;
+  }
+
+  .hero-stat-item dd {
+    font-size: 0.68rem;
+  }
+
+  .hero-hello-title {
+    font-size: clamp(3.2rem, 14vw, 4.4rem);
   }
 
   .hero-actions-mockup {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
   }
 
   .button {
     width: 100%;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+  }
+
+  .hero-portrait-frame {
+    max-width: 270px;
+    height: 320px;
   }
 
   .floating-dock {
-    width: 96vw;
-    gap: 2px;
+    width: calc(100vw - 16px);
+    gap: 1px;
     padding: 4px;
+    bottom: max(12px, env(safe-area-inset-bottom, 12px));
   }
 
   .floating-dock a {
-    padding: 6px 8px;
-    font-size: 0.7rem;
+    padding: 7px 7px;
+    font-size: 0.72rem;
+    flex: 1;
+    text-align: center;
+  }
+
+  .section {
+    padding: 48px 18px;
+  }
+
+  .contact-section {
+    margin: 16px 14px 40px;
+    padding: 24px 18px;
+    border-radius: 16px;
+  }
+
+  .social-btn {
+    width: 44px;
+    height: 44px;
   }
 }

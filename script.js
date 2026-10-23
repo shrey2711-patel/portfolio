@@ -223,10 +223,16 @@ window.addEventListener("load", () => {
   if (targetLink) { setActive(targetLink); moveTo(targetLink, false); }
 });
 
-// ── Window resize: snap without glide ────────────────────────────────────────
+// ── Window resize & orientation change: snap without glide ───────────────────
 window.addEventListener("resize", () => {
   const active = dock.querySelector("a.active");
   if (active) moveTo(active, false);
+});
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => {
+    const active = dock.querySelector("a.active");
+    if (active) moveTo(active, false);
+  }, 100);
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
