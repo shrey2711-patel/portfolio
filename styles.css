@@ -431,7 +431,7 @@ a {
 .hero-portrait-frame {
   position: absolute;
   right: 0;
-   bottom: 4;         /* anchored to hero floor */
+  bottom: 0;         /* anchored to hero floor */
   top: -50px;         /* bleed 60px above the hero top edge — shows full head */
   width: 44%;
   z-index: 10;
@@ -447,9 +447,9 @@ a {
   margin-top: 10%;
   object-fit: contain;
   object-position: top center; /* keep head anchored, let feet clip if needed */
-  filter: grayscale(60%);
-  mix-blend-mode: multiply;
-  opacity: 0.95;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
   transition: opacity 0.5s ease;
   display: block;
 }
