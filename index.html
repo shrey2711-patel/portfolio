@@ -10,13 +10,7 @@
     <title>Shrey Moghariya | Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
-    <!-- GSAP for Cinematic Entrance & 3D Interactions -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   </head>
   <body>
     <!-- Bottom Floating Nav Dock -->
@@ -30,141 +24,50 @@
     </nav>
 
     <main>
-      <!-- Cinematic 3D Hero Section -->
-      <section class="hero cinematic-hero" id="home">
-        <!-- Interactive Canvas for Connected Particle Network & Dynamic Trails -->
-        <canvas id="hero-particle-canvas" class="hero-particle-canvas"></canvas>
-
-        <!-- Ambient Cinematic Crimson Lighting Flares -->
-        <div class="hero-ambient-glow glow-crimson-primary" aria-hidden="true"></div>
-        <div class="hero-ambient-glow glow-crimson-secondary" aria-hidden="true"></div>
-        <div class="hero-noise-overlay" aria-hidden="true"></div>
-
-        <!-- Oversized Outlined Background Typography -->
-        <div class="hero-backdrop-typography" aria-hidden="true">
-          <span class="outline-text">PORTFOLIO</span>
+      <!-- Hero Section (Mockup Redesign) -->
+      <section class="hero" id="home">
+        <!-- Rotated Left Sidebar Text -->
+        <div class="sidebar-left">
+          <div class="sidebar-text-top">Student & Developer</div>
+          <div class="sidebar-text-bottom">
+            <!-- <span>2026</span> -->
+            <!-- <div class="sidebar-scroll">Scroll down ↓</div> -->
+          </div>
         </div>
 
-        <!-- Main Hero Container (Asymmetrical Composition) -->
-        <div class="hero-container">
-          <!-- Left Editorial Content Column -->
-          <div class="hero-editorial">
-            <!-- Greeting & Location Badges -->
-            <div class="hero-badge-group">
-              <span class="hero-greeting-pill">
-                <span class="crimson-pulse-dot"></span>
-                Hello, I'm
-              </span>
-              <span class="hero-location-pill">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                </svg>
-                Anand, Gujarat, India
-              </span>
-            </div>
+        <div class="hero-content">
+          <div class="hero-copy-mockup">
+            <!-- Stats -->
+            <dl class="hero-stats-mockup" aria-label="Profile highlights">
+              <div class="hero-stat-item">
+                <dt>7+</dt>
+                <dd>Projects completed</dd>
+              </div>
+              <div class="hero-stat-item">
+                <dt>3+</dt>
+                <dd>Events organized</dd>
+              </div>
+            </dl>
 
-            <!-- Name -->
-            <h1 class="hero-name">SHREY MOGHARIYA</h1>
+            <!-- Massive Hello Title -->
+            <h1 class="hero-hello-title">Hello</h1>
 
-            <!-- Professional Identity -->
-            <div class="hero-identity-tag">Final-year BCA Student <span class="identity-sep">|</span> Developer</div>
-
-            <!-- Main Headline -->
-            <h2 class="hero-headline">
-              Building Digital Experiences <span class="headline-accent">& Business Systems.</span>
-            </h2>
-
-            <!-- Resume Description -->
-            <p class="hero-description">
-              Final-year BCA student with hands-on experience developing web applications and business record-management systems. Built and deployed an e-commerce website with online payments, authentication and cloud-backed services, along with custom portals for insurance and business records.
+            <!-- Biography line matching mockup -->
+            <p class="hero-bio">
+              — It's Shrey Moghariya, a full-stack developer & coordinator. I build practical web applications and organize college events.
             </p>
 
-            <!-- Actions CTA Buttons -->
-            <div class="hero-cta-group">
-              <a href="#projects" class="btn-cinematic-primary">
-                <span>View Projects</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-              <a href="#contact" class="btn-cinematic-secondary">
-                <span>Contact Me</span>
-                <span class="btn-glow-dot"></span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Right Column: 3D Floating Profile Card -->
-          <div class="hero-visual-wrapper">
-            <div class="hero-3d-card" id="hero-3d-card">
-              <!-- Holographic Corner Accents -->
-              <div class="card-corner corner-tl"></div>
-              <div class="card-corner corner-tr"></div>
-              <div class="card-corner corner-bl"></div>
-              <div class="card-corner corner-br"></div>
-
-              <!-- Ambient Rim Glow & Specular Light -->
-              <div class="card-glass-rim"></div>
-              <div class="card-ambient-aura"></div>
-
-              <!-- Card Header / Tech Indicator -->
-              <div class="card-top-bar">
-                <span class="card-status-dot"></span>
-                <span class="card-status-label">DEV_ONLINE</span>
-                <span class="card-code-tag">BCA.2026</span>
-              </div>
-
-              <!-- Profile Cutout Portrait Frame -->
-              <div class="card-portrait-frame">
-                <img src="assets/shrey-portrait.png?v=2" alt="Shrey Moghariya" class="hero-profile-img" />
-              </div>
-
-              <!-- Card Bottom Badge -->
-              <div class="card-bottom-info">
-                <div class="card-info-item">
-                  <span class="info-label">STATUS</span>
-                  <span class="info-value">Building & Scaling</span>
-                </div>
-                <div class="card-info-item right">
-                  <span class="info-label">FOCUS</span>
-                  <span class="info-value">Full-Stack Web</span>
-                </div>
-              </div>
+            <div class="hero-actions-mockup">
+              <a class="button primary" href="#projects">View Portfolio</a>
+              <a class="button secondary" href="#contact">Book A Call ↗</a>
             </div>
           </div>
         </div>
 
-        <!-- Bottom Row: Expertise Labels & Scroll Indicator -->
-        <div class="hero-bottom-bar">
-          <div class="hero-expertise-list">
-            <span class="expertise-label-title">Core Expertise:</span>
-            <div class="expertise-pills">
-              <span class="expertise-pill">
-                <span class="pill-dot"></span>
-                Full-Stack Development
-              </span>
-              <span class="expertise-pill">
-                <span class="pill-dot"></span>
-                Web Application Development
-              </span>
-              <span class="expertise-pill">
-                <span class="pill-dot"></span>
-                Business Management Systems
-              </span>
-            </div>
-          </div>
-
-          <a href="#about" class="hero-scroll-indicator" aria-label="Scroll to explore">
-            <span class="scroll-mouse">
-              <span class="scroll-wheel"></span>
-            </span>
-            <span class="scroll-text">SCROLL TO EXPLORE</span>
-          </a>
+        <!-- Cutout portrait -->
+        <div class="hero-portrait-frame">
+          <img src="assets/shrey-portrait.png?v=2" alt="Shrey Moghariya Portrait" />
         </div>
-
-        <!-- Seamless Horizon Transition into About Section -->
-        <div class="hero-horizon-transition" aria-hidden="true"></div>
       </section>
 
       <!-- About Section -->
